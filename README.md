@@ -1,6 +1,6 @@
 # Add HTTP Method to Resource-timing entry
 
-Proposal to add a new field `httpMethod` to PerformanceResourceTiming which is an [ByteString](https://webidl.spec.whatwg.org/#idl-ByteString) highlighting the method used to fetch a resource.
+Proposal to add a new field `requestMethod` to PerformanceResourceTiming which is an [ByteString](https://webidl.spec.whatwg.org/#idl-ByteString) highlighting the method used to fetch a resource.
 
 ## Usecases
 
@@ -19,7 +19,7 @@ interface PerformanceResourceTiming : PerformanceEntry {
     readonly attribute DOMString initiatorType;
     readonly attribute DOMString deliveryType;
     readonly attribute ByteString nextHopProtocol;
-+   readonly attribute ByteString httpMethod
++   readonly attribute ByteString requestMethod
     readonly attribute DOMHighResTimeStamp workerStart;
     ...
     readonly attribute unsigned short responseStatus;
@@ -30,12 +30,12 @@ interface PerformanceResourceTiming : PerformanceEntry {
 
 ## Example code
 
-An example of how the `httpMethod` field can be used is shown below, in this case the code is logging all resources that were fetched using the `POST` method.
+An example of how the `requestMethod` field can be used is shown below, in this case the code is logging all resources that were fetched using the `POST` method.
 
 ```js
 const entries = performance.getEntries();
 for( entry in entries ) {
-    if ( entry.httpMethod === 'POST' ) {
+    if ( entry.requestMethod === 'POST' ) {
         console.log( entry );
     }
 }
@@ -46,13 +46,13 @@ for( entry in entries ) {
 The following changes to specifications will be required to implement this feature:
 
 - Fetch
-  - New `httpMethod` field added to [fetch_timing_info](https://fetch.spec.whatwg.org/#fetch-timing-info)
-  - The [Fetching algorithm](https://fetch.spec.whatwg.org/#fetching) is modified to initialize [fetch_timing_info](https://fetch.spec.whatwg.org/#fetch-timing-info)'s `httpMethod` field with the [request's method](https://fetch.spec.whatwg.org/#concept-request-method)
+  - New `requestMethod` field added to [fetch_timing_info](https://fetch.spec.whatwg.org/#fetch-timing-info)
+  - The [Fetching algorithm](https://fetch.spec.whatwg.org/#fetching) is modified to initialize [fetch_timing_info](https://fetch.spec.whatwg.org/#fetch-timing-info)'s `requestMethod` field with the [request's method](https://fetch.spec.whatwg.org/#concept-request-method)
 
 - ResourceTiming
-  - Add `httpMethod` field to [PerformanceResourceTiming interface](https://w3c.github.io/resource-timing/#sec-performanceresourcetiming)
+  - Add `requestMethod` field to [PerformanceResourceTiming interface](https://w3c.github.io/resource-timing/#sec-performanceresourcetiming)
   - A PerformanceResourceTiming has an associated ByteString http method.
-  - The httpMethod getter steps are to return this's [normalized](https://fetch.spec.whatwg.org/#concept-method-normalize) http method.
+  - The requestMethod getter steps are to return this's [normalized](https://fetch.spec.whatwg.org/#concept-method-normalize) http method.
 
 ## Security/Privacy Considerations
 
@@ -145,3 +145,4 @@ No.
 No difference.
 
 ## Changelog
+- 25 Oct 2023 - Change naming scheme to `requestMethod` per feedback in fetch PR.
